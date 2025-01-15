@@ -1064,12 +1064,9 @@ class Equiformer(Module):
         for k, v in basis.items():
             self.register_buffer(f'basis:{k}', v)
 
-    @property
-    def device(self):
-        # If the model is wrapped in DataParallel, access the underlying model
-        if isinstance(self, torch.nn.DataParallel):
+    def get_device(self):
+        if hasattr(self, 'module'):
             return next(self.module.parameters()).device
-        # If not wrapped in DataParallel, return the device of the model's parameters
         return next(self.parameters()).device
 
     @beartype
@@ -1082,7 +1079,7 @@ class Equiformer(Module):
         edges = None,
         return_pooled = False
     ):
-        _mask, device = mask, self.device
+        _mask, device = mask, self.get_device()
 
         # apply token embedding and positional embedding to type-0 features
         # (if type-0 feats are passed as a tensor they are expected to be of a flattened shape (batch, seq, n_feats)

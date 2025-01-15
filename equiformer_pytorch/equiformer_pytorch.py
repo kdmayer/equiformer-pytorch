@@ -1065,9 +1065,7 @@ class Equiformer(Module):
             self.register_buffer(f'basis:{k}', v)
 
     def get_device(self):
-        if hasattr(self, 'module'):
-            return next(self.module.parameters()).device
-        return next(self.parameters()).device
+        return next(self.module.parameters()).device
 
     @beartype
     def forward(

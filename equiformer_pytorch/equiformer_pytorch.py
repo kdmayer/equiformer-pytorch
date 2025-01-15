@@ -1066,6 +1066,10 @@ class Equiformer(Module):
 
     @property
     def device(self):
+        # If the model is wrapped in DataParallel, access the underlying model
+        if isinstance(self, torch.nn.DataParallel):
+            return next(self.module.parameters()).device
+        # If not wrapped in DataParallel, return the device of the model's parameters
         return next(self.parameters()).device
 
     @beartype

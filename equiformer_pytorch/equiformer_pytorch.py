@@ -1064,8 +1064,9 @@ class Equiformer(Module):
         for k, v in basis.items():
             self.register_buffer(f'basis:{k}', v)
 
-    def get_device(self):
-        return next(self.module.parameters()).device
+    @property
+    def device(self):
+        return next(self.parameters()).device
 
     @beartype
     def forward(
@@ -1077,7 +1078,7 @@ class Equiformer(Module):
         edges = None,
         return_pooled = False
     ):
-        _mask, device = mask, self.get_device()
+        _mask, device = mask, self.device
 
         # apply token embedding and positional embedding to type-0 features
         # (if type-0 feats are passed as a tensor they are expected to be of a flattened shape (batch, seq, n_feats)
